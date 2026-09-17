@@ -1,5 +1,4 @@
-export default function NodeCard({ node, isSelected, onClick }) {
-
+export default function NodeCard({ node, isSelected, onClick, searchQuery }) {
   const borderColor = {
     start: 'border-border-start',
     question: 'border-border-question',
@@ -18,14 +17,23 @@ export default function NodeCard({ node, isSelected, onClick }) {
     end: 'END',
   }[node.type];
 
+  const query = searchQuery.trim().toLowerCase();
+  const isMatch = query.length > 0 && node.text.toLowerCase().includes(query);
+
   const selectedClass = isSelected
     ? 'ring-2 ring-border-selected ring-offset-2 ring-offset-canvas shadow-[0_0_20px_rgba(139,92,246,0.4)]'
     : '';
 
+  const matchClass = isMatch
+    ? 'ring-2 ring-yellow-400 ring-offset-2 ring-offset-canvas'
+    : '';
+
+  const dimClass = query.length > 0 && !isMatch ? 'opacity-30' : '';
+
   return (
     <div
       onClick={() => onClick(node.id)}
-      className={`absolute w-[220px] bg-card border-2 ${borderColor} rounded-xl shadow-lg p-4 flex flex-col gap-3 cursor-pointer transition-all hover:border-border-selected ${selectedClass}`}
+      className={`absolute w-[220px] bg-card border-2 ${borderColor} rounded-xl shadow-lg p-4 flex flex-col gap-3 cursor-pointer transition-all hover:border-border-selected ${selectedClass} ${matchClass} ${dimClass}`}
       style={{
         left: node.position.x,
         top: node.position.y,

@@ -4,7 +4,13 @@ import Connector from './Connector';
 const NODE_WIDTH = 220;
 const NODE_HEIGHT = 200;
 
-export default function Canvas({ nodes, canvasSize, selectedNodeId, onSelectNode }) {
+export default function Canvas({
+  nodes,
+  canvasSize,
+  selectedNodeId,
+  onSelectNode,
+  searchQuery = '',
+}) {
 
   const connections = [];
   for (const parent of nodes) {
@@ -57,12 +63,14 @@ export default function Canvas({ nodes, canvasSize, selectedNodeId, onSelectNode
           />
         ))}
       </svg>
+
       {nodes.map((node) => (
         <NodeCard
           key={node.id}
           node={node}
           isSelected={node.id === selectedNodeId}
           onClick={onSelectNode}
+          searchQuery={searchQuery}
         />
       ))}
     </div>
