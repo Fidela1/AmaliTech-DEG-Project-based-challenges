@@ -1,4 +1,4 @@
-export default function NodeCard({ node }) {
+export default function NodeCard({ node, isSelected, onClick }) {
 
   const borderColor = {
     start: 'border-border-start',
@@ -18,9 +18,14 @@ export default function NodeCard({ node }) {
     end: 'END',
   }[node.type];
 
+  const selectedClass = isSelected
+    ? 'ring-2 ring-border-selected ring-offset-2 ring-offset-canvas shadow-[0_0_20px_rgba(139,92,246,0.4)]'
+    : '';
+
   return (
     <div
-      className={`absolute w-[220px] bg-card border-2 ${borderColor} rounded-xl shadow-lg p-4 flex flex-col gap-3`}
+      onClick={() => onClick(node.id)}
+      className={`absolute w-[220px] bg-card border-2 ${borderColor} rounded-xl shadow-lg p-4 flex flex-col gap-3 cursor-pointer transition-all hover:border-border-selected ${selectedClass}`}
       style={{
         left: node.position.x,
         top: node.position.y,
@@ -32,13 +37,12 @@ export default function NodeCard({ node }) {
           {typeLabel}
         </span>
       </div>
-      <p className="text-sm text-text-primary leading-snug">
-        {node.text}
-      </p>
+
+      <p className="text-sm text-text-primary leading-snug">{node.text}</p>
+
       {node.options && node.options.length > 0 && (
         <>
           <div className="h-px bg-connector-label-bg" />
-
           <div className="flex flex-col gap-2">
             {node.options.map((option, index) => (
               <div
