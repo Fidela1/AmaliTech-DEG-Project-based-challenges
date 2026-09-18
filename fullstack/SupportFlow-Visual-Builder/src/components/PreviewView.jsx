@@ -71,7 +71,7 @@ export default function PreviewView({ currentNode, chatHistory, onAnswer, onRest
                 <button
                   key={i}
                   onClick={() => onAnswer(option.nextId, option.label)}
-                  className="w-full text-left bg-canvas hover:bg-connector-label-bg border border-connector-label-bg text-text-primary text-sm px-4 py-3 rounded-xl transition-colors flex items-center justify-between"
+                  className="w-full text-left bg-canvas hover:bg-connector-label-bg border border-connector-label-bg text-text-primary text-sm px-4 py-3 rounded-xl transition-colors flex items-center justify-between cursor-pointer"
                 >
                   <span>{option.label}</span>
                   <span className="text-text-muted">→</span>

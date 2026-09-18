@@ -1,5 +1,6 @@
 import NodeCard from './NodeCard';
 import Connector from './Connector';
+import ConnectorLabel from './ConnectorLabel';
 
 const NODE_WIDTH = 220;
 const NODE_HEIGHT = 200;
@@ -64,6 +65,19 @@ export default function Canvas({
         ))}
       </svg>
 
+{connections.map((conn, i) => {
+  const option = conn.from.options?.find((o) => o.nextId === conn.to.id);
+  return (
+    <ConnectorLabel
+      key={i}
+      from={conn.from}
+      to={conn.to}
+      label={option?.label || ''}
+      nodeWidth={NODE_WIDTH}
+      nodeHeight={NODE_HEIGHT}
+    />
+  );
+})}
       {nodes.map((node) => (
         <NodeCard
           key={node.id}
@@ -73,6 +87,12 @@ export default function Canvas({
           searchQuery={searchQuery}
         />
       ))}
+      {/* Empty state hint */}
+{!selectedNodeId && (
+  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-text-muted bg-panel/80 px-3 py-1.5 rounded-full border border-connector-label-bg pointer-events-none">
+    Click any node to edit · Ctrl+Z to undo
+  </div>
+)}
     </div>
   );
 }
