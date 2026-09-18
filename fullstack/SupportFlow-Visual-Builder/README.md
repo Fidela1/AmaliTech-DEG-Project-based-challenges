@@ -8,7 +8,7 @@ Built for the **AmaliTech DEG Project-Based Challenge**.
 
 ## Links
 
-- **Live Demo:** 
+- **Live Demo:** https://amali-tech-deg-project-based-challe-iota-blush.vercel.app/
 - **Figma Design:** [View design file](https://www.figma.com/design/F4G40RE1RAQVjCtNQzSO2T/SupportFlow-Visual-Builder?node-id=1-2&p=f&t=a2K3RlZB3G0M9Xyx-0)
 - **Original Challenge:** [AmaliTech repo](https://github.com/AmaliTech-Training-Academy/AmaliTech-DEG-Project-based-challenges/tree/main/fullstack/SupportFlow-Visual-Builder)
 
@@ -83,31 +83,6 @@ npm run build
 
 ---
 
-## Files & Folders
-
-```
-SupportFlow-Visual-Builder/
-├── flow_data.json              ← data source (from the challenge)
-├── tailwind.config.js          ← custom colors
-├── vite.config.js
-├── index.html
-└── src/
-    ├── App.jsx                 ← holds all the main state
-    ├── index.css
-    ├── main.jsx
-    ├── data/
-    │   └── flow_data.json      ← copy the app imports
-    └── components/
-        ├── Canvas.jsx          ← draws the flowchart area
-        ├── NodeCard.jsx        ← one question card
-        ├── Connector.jsx       ← the line between two cards
-        ├── ConnectorLabel.jsx  ← the pill on a line
-        ├── EditPanel.jsx       ← the edit sidebar
-        └── PreviewView.jsx     ← the chat interface
-```
-
----
-
 ## Design System
 
 The colors come from a Figma design and are used everywhere in the app.
@@ -151,21 +126,13 @@ The search box checks each node's text. Matching nodes glow yellow; non-matches 
 
 ## Screenshots
 
-_(Add screenshots after deployment)_
-
 **Editor View:**
 
-![Editor View]()
+![Editor View](./src/docs/editor_view.PNG)
 
 **Preview Mode:**
 
-![Preview Mode]()
-
-**Search in Action:**
-
-![Search]()
-
----
+![Preview Mode](./src/docs/preview.PNG)
 
 ## What's Been Tested
 

@@ -87,7 +87,7 @@ export default function Canvas({
           searchQuery={searchQuery}
         />
       ))}
-      {/* Empty state hint */}
+    
 {!selectedNodeId && (
   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-text-muted bg-panel/80 px-3 py-1.5 rounded-full border border-connector-label-bg pointer-events-none">
     Click any node to edit · Ctrl+Z to undo

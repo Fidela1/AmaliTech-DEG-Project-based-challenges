@@ -1,10 +1,6 @@
-// ConnectorLabel.jsx
-// Small pill rendered on a connector line showing the option that led there.
-
 export default function ConnectorLabel({ from, to, label, nodeWidth, nodeHeight }) {
   if (!label) return null;
 
-  // Midpoint between the two nodes (matches the curve's mid point)
   const x1 = from.position.x + nodeWidth / 2;
   const y1 = from.position.y + nodeHeight;
   const x2 = to.position.x + nodeWidth / 2;
