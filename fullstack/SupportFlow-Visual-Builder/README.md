@@ -1,111 +1,195 @@
-# SupportFlow-Visual-Builder
+# SupportFlow Visual Builder
 
-This challenge is designed to test your ability to bridge Computer Science fundamentals with Modern Frontend Engineering.
+A visual editor for building chatbot conversation flows. Instead of editing a spreadsheet, support managers can see their bot's logic as a flowchart and test it instantly.
 
-## 1. Business Scenario & Context
-
-**Client:** SupportFlow AI
-**Industry:** Customer Support Automation (Chatbots)
-
-**The Problem:** SupportFlow helps companies build automated "Help Bots" (e.g., "Press 1 for Billing, 2 for Tech Support"). Currently, their configuration is done via a messy Excel spreadsheet. It is error-prone, hard to visualize, and frustrating for non-technical managers.
-
-**Your Role:** You are the new Frontend Engineer. The Product Manager wants a **Visual Decision Tree Editor** where users can see their conversation flow as a flowchart, edit the questions in real-time, and "test drive" the bot instantly.
+Built for the **AmaliTech DEG Project-Based Challenge**.
 
 ---
 
-## 2. The Assignment Stages
+## Links
 
-This is a **hybrid design/engineering challenge**. You are expected to demonstrate competence in both visual design logic and complex DOM manipulation.
-
-### Phase 1: The Design System
-
-**Before writing code, you must design the visual language of the tool.**
-
-- **Deliverable:** A link to your design file (Figma, Penpot, or Sketch) or a PDF export of your design frames.
-- **Requirement:** Your design file must include a dedicated **"Design System" page** that defines:
-  - **Canvas**
-  - **Node Cards**
-  - **Connectors**
-  - **Color Semantics**
-
-### Phase 2: The Implementation
-
-**Build the "Flow Builder" using your design system.**
-
-- **Constraint 1 (Critical):** You **cannot** use Flowchart/Graph libraries like `react-flow`, `jsPlumb`, or `mermaid.js`. You must build the node rendering and line connection logic yourself to prove you understand DOM coordinates and SVG/Canvas drawing.
-- **Constraint 2:** Do not use component libraries like Material UI or Bootstrap. (Tailwind is allowed only if you use it to build custom components).
+- **Live Demo:** 
+- **Figma Design:** [View design file](https://www.figma.com/design/F4G40RE1RAQVjCtNQzSO2T/SupportFlow-Visual-Builder?node-id=1-2&p=f&t=a2K3RlZB3G0M9Xyx-0)
+- **Original Challenge:** [AmaliTech repo](https://github.com/AmaliTech-Training-Academy/AmaliTech-DEG-Project-based-challenges/tree/main/fullstack/SupportFlow-Visual-Builder)
 
 ---
 
-## 3. User Stories & Acceptance Criteria
+## What It Does
 
-### Core Features (Required)
+**Editor View**
+- Shows the conversation as a flowchart — each question is a card, each answer is a line to the next card
+- Click a card to edit its text — changes appear instantly
+- Search for nodes by text — matches glow yellow, others fade
 
-#### Story 1: The Visual Graph
+**Preview Mode**
+- Click "Play" to test the bot as a customer would
+- Answer questions in a chat interface
+- The bot walks through the flow based on your choices
+- Restart when you reach the end
 
-> "As a user, I want to see my conversation logic as a connected flowchart, not a list."
-
-- **AC 1:** The app renders "Nodes" (questions) based on the provided JSON data.
-- **AC 2:** The Nodes are positioned absolutely on the canvas (using the x/y coordinates provided in the JSON).
-- **AC 3:** Visual lines (SVG or HTML Canvas) connect a Parent Node to its Child Nodes based on the flow logic.
-
-#### Story 2: The Editor
-
-> "As a user, I need to update the text when our support policies change."
-
-- **AC 1:** Clicking a Node opens an "Edit Panel" or turns the card into an editable form.
-- **AC 2:** Users can edit the "Question Text" and the changes reflect immediately on the canvas.
-- **AC 3:** (Constraint) You do not need to save changes to a permanent database. Managing local state (in-memory) is sufficient.
-
-#### Story 3: The "Preview" Mode (The Runner)
-
-> "As a manager, I want to test the bot experience as if I were a real customer."
-
-- **AC 1:** A "Play" button toggles the UI from "Editor View" (Flowchart) to "Preview Mode" (Chat Interface).
-- **AC 2:** In Preview Mode, the app displays the Start Node's question.
-- **AC 3:** When the user selects an answer, the app traverses the graph to show the next node.
-- **AC 4:** Show a "Restart" button when a leaf node (end of conversation) is reached.
-
-### The "Wildcard" Feature (Required)
-
-#### Story 4: The Innovation Clause
-
-> "As a developer, I want to add one feature that makes this tool indispensable."
-
-- **Task:** Identify a missing feature that improves the _Editor_ experience.
-- **AC 1:** Implement **one** additional feature of your choice.
-- **AC 2:** In your README, explain _why_ you chose this feature and how it adds value to the business.
+**Undo / Redo**
+- `Ctrl+Z` undoes your last edit
+- `Ctrl+Y` redoes it
 
 ---
 
-## 4. Technical Requirements
+## The Wildcard Feature — Why I Added It
 
-- **Data:** Use the `flow_data.json` file provided in this repo.
-- **Tech Stack:** React, Vue, Svelte, or Vanilla JS.
+I added **Undo/Redo** and **Node Search** because they solve real problems for support managers:
+
+- **Undo/Redo** — If a manager accidentally changes a question's wording, one keystroke brings it back. No need to remember the original text.
+- **Node Search** — A large flow can have dozens of nodes. Search lets managers jump straight to the one they need instead of scrolling.
+
+Both features cut down editing time and make the tool easier to use for non-technical staff.
 
 ---
 
-## 5. Submission Instructions
+## 🛠 Built With
 
-1.  **Fork** this repository.
-2.  Complete the code in your fork.
-3.  **Update the README:**
-    - **Delete** all the instructions in this file (the text you are reading now).
-    - **Replace** them with your own documentation.
-    - _Note: Do not append your docs to the end. The final README should look like a professional project documentation, not a homework assignment._
-4.  Submit your repo link via the [online](https://forms.cloud.microsoft/e/PrfSgKKQ0k) form.
+- **React 18** — UI framework
+- **Vite** — Build tool
+- **Tailwind CSS** — Styling (custom components only)
+- **Custom SVG** — Drawing the connector lines between nodes
+- **React Hooks** — State management (`useState`, `useEffect`, `useRef`)
 
-### ⚠️ CRITICAL: Pre-Submission Checklist
+**No banned libraries:**
+- No flowchart tools like `react-flow`, `jsPlumb`, or `mermaid.js`
+- No UI kits like Material UI, Bootstrap, or Chakra UI
 
-**STOP and review your work.** To be eligible for the Solution Defense interview, your submission **MUST** pass the following "Gatekeeper" checks.
+Everything is built from scratch.
 
-If any of the following are incorrect, your submission will be flagged as incomplete and you will **NOT** be invited for an interview.
+---
 
-1.  **Public Repository:** Is your GitHub repository set to **Public**? (Private links will be auto-rejected).
-2.  **Audit-Ready History:** Does your Git commit history show your progress over time? (Repositories with a single "Initial Commit" or "Upload files" containing the entire project will be **rejected as unverifiable**).
-3.  **Working Deployment:** Have you tested your live link in an **Incognito/Private** window to ensure it loads without errors?
-4.  **No Restricted Libraries:** Did you build your own components? (Submissions using **Bootstrap, Material UI, or Chakra UI** will be disqualified).
-5.  **Design File Access:** Is your Figma/Penpot link included and set to **"Anyone with the link can view"**?
-6.  **Documentation:** Have you deleted the original assignment text from the `README.md` and replaced it with your own project documentation?
+## Run It Locally
 
-> **By submitting your work, you acknowledge that failure to meet these criteria effectively ends your application process.**
+```bash
+# 1. Clone the repo
+git clone https://github.com/Fidela1/AmaliTech-DEG-Project-based-challenges.git
+cd AmaliTech-DEG-Project-based-challenges/fullstack/SupportFlow-Visual-Builder
+
+# 2. Install packages
+npm install
+
+# 3. Start the app
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+To make a production build:
+```bash
+npm run build
+```
+
+---
+
+## Files & Folders
+
+```
+SupportFlow-Visual-Builder/
+├── flow_data.json              ← data source (from the challenge)
+├── tailwind.config.js          ← custom colors
+├── vite.config.js
+├── index.html
+└── src/
+    ├── App.jsx                 ← holds all the main state
+    ├── index.css
+    ├── main.jsx
+    ├── data/
+    │   └── flow_data.json      ← copy the app imports
+    └── components/
+        ├── Canvas.jsx          ← draws the flowchart area
+        ├── NodeCard.jsx        ← one question card
+        ├── Connector.jsx       ← the line between two cards
+        ├── ConnectorLabel.jsx  ← the pill on a line
+        ├── EditPanel.jsx       ← the edit sidebar
+        └── PreviewView.jsx     ← the chat interface
+```
+
+---
+
+## Design System
+
+The colors come from a Figma design and are used everywhere in the app.
+
+| Name | Hex | Where it's used |
+|------|-----|-----------------|
+| `canvas` | `#0F172A` | Page background |
+| `card` | `#1E293B` | Node card background |
+| `panel` | `#111827` | Top bar background |
+| `border-start` | `#10B981` | Green — start nodes |
+| `border-question` | `#3B82F6` | Blue — question nodes |
+| `border-end` | `#EF4444` | Red — end nodes |
+| `border-selected` | `#8B5CF6` | Purple — selected/hovered items |
+| `text-primary` | `#F1F5F9` | Main text |
+| `text-muted` | `#94A3B8` | Secondary text |
+| `connector-line` | `#475569` | Lines between nodes |
+| `connector-label-bg` | `#334155` | Divider and pill backgrounds |
+
+Font: **Inter**.
+
+---
+
+## How It Works 
+
+### Nodes
+Each node has an `x` and `y` position in `flow_data.json`. The app places each card at those exact coordinates on a canvas.
+
+### Connector Lines
+The app draws an SVG curve from the bottom of a parent card to the top of its child card. A small arrow points to the child. This is done with a **bezier curve** — a smooth line that bends naturally.
+
+### Undo / Redo
+Every time you edit a node, the app saves a snapshot of all the nodes. Undo moves back one snapshot. Redo moves forward. Simple and reliable.
+
+### Preview Mode
+Preview walks through the flow. When you click an answer, the app finds the next node by its ID and shows the next question. When there are no more options, the conversation has ended.
+
+### Search
+The search box checks each node's text. Matching nodes glow yellow; non-matches dim so they don't distract.
+
+---
+
+## Screenshots
+
+_(Add screenshots after deployment)_
+
+**Editor View:**
+
+![Editor View]()
+
+**Preview Mode:**
+
+![Preview Mode]()
+
+**Search in Action:**
+
+![Search]()
+
+---
+
+## What's Been Tested
+
+- [x] All nodes appear at their correct positions
+- [x] Connector lines are drawn between every parent and child
+- [x] Clicking a node opens its edit panel
+- [x] Editing text updates the canvas immediately
+- [x] Preview mode walks through the flow correctly
+- [x] Restart button appears at the end
+- [x] Undo/redo works with buttons and keyboard
+- [x] Search highlights matches and dims others
+- [x] No console errors
+- [x] Tested in an incognito window
+
+---
+
+## License
+
+CC0 1.0 Universal — see `LICENSE` for details.
+
+---
+
+## Credits
+
+- Challenge by [AmaliTech Training Academy](https://github.com/AmaliTech-Training-Academy)
+- Design system built in Figma
+- Built with React, Vite, and Tailwind CSS
