@@ -1,4 +1,12 @@
-export default function NodeCard({ node, isSelected, onClick, searchQuery }) {
+export default function NodeCard({
+  node,
+  isSelected,
+  onClick,
+  searchQuery = '',
+  onMouseDown,
+  isDragging = false,
+  dragOffset = { x: 0, y: 0 },
+}) {
   const borderColor = {
     start: 'border-border-start',
     question: 'border-border-question',
@@ -30,14 +38,21 @@ export default function NodeCard({ node, isSelected, onClick, searchQuery }) {
 
   const dimClass = query.length > 0 && !isMatch ? 'opacity-30' : '';
 
+  const dragClass = isDragging
+    ? 'cursor-grabbing z-50 !shadow-2xl'
+    : 'cursor-grab';
+
+  const left = node.position.x + dragOffset.x;
+  const top = node.position.y + dragOffset.y;
+
   return (
     <div
-      onClick={() => onClick(node.id)}
-      className={`absolute w-[220px] bg-card border-2 ${borderColor} rounded-xl shadow-lg p-4 flex flex-col gap-3 cursor-pointer transition-all hover:border-border-selected ${selectedClass} ${matchClass} ${dimClass}`}
-      style={{
-        left: node.position.x,
-        top: node.position.y,
+      onMouseDown={(e) => {
+        onClick(node.id);
+        if (onMouseDown) onMouseDown(e, node);
       }}
+      style={{ left, top }}
+      className={`absolute w-[220px] bg-card border-2 ${borderColor} rounded-xl shadow-lg p-4 flex flex-col gap-3 select-none hover:border-border-selected ${selectedClass} ${matchClass} ${dimClass} ${dragClass}`}
     >
       <div className="flex items-center gap-2">
         <span className={`w-2 h-2 rounded-full ${dotColor}`} />
@@ -57,7 +72,7 @@ export default function NodeCard({ node, isSelected, onClick, searchQuery }) {
                 key={index}
                 className="flex items-center justify-between bg-canvas rounded-md px-3 py-2 text-xs text-text-primary"
               >
-                <span>{option.label}</span>
+                <span className="truncate">{option.label}</span>
                 <span className="text-text-muted">→</span>
               </div>
             ))}
