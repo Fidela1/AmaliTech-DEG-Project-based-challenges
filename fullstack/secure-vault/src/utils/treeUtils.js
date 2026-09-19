@@ -37,3 +37,29 @@ export function getFileType(name) {
 
   return types[ext] || 'File';
 }
+
+export function flattenVisibleTree(tree, expandedIds, depth = 0, parentId = null) {
+  const result = [];
+
+  for (const node of tree) {
+    result.push({
+      node,
+      depth,
+      parentId,
+      isExpanded: expandedIds.has(node.id),
+    });
+
+    if (
+      node.type === 'folder' &&
+      expandedIds.has(node.id) &&
+      node.children &&
+      node.children.length > 0
+    ) {
+      result.push(
+        ...flattenVisibleTree(node.children, expandedIds, depth + 1, node.id)
+      );
+    }
+  }
+
+  return result;
+}
