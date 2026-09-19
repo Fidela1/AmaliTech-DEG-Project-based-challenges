@@ -5,6 +5,8 @@ export default function Tree({
   expandedIds,
   selectedId,
   focusedId,
+  matchedIds,
+  isSearching,
   onToggle,
   onSelect,
   onFocus,
@@ -19,6 +21,8 @@ export default function Tree({
           expandedIds={expandedIds}
           selectedId={selectedId}
           focusedId={focusedId}
+          matchedIds={matchedIds}
+          isSearching={isSearching}
           onToggle={onToggle}
           onSelect={onSelect}
           onFocus={onFocus}

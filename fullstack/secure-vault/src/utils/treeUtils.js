@@ -63,3 +63,26 @@ export function flattenVisibleTree(tree, expandedIds, depth = 0, parentId = null
 
   return result;
 }
+
+export function findAllMatches(tree, query) {
+  if (!query || !query.trim()) return [];
+  const q = query.toLowerCase().trim();
+  const matches = [];
+
+  function walk(nodes, ancestors) {
+    for (const node of nodes) {
+      const currentPath = [...ancestors, node];
+
+      if (node.name.toLowerCase().includes(q)) {
+        matches.push({ node, path: currentPath });
+      }
+
+      if (node.children && node.children.length > 0) {
+        walk(node.children, currentPath);
+      }
+    }
+  }
+
+  walk(tree, []);
+  return matches;
+}
