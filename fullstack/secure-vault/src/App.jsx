@@ -1,39 +1,36 @@
-// App.jsx
-// Top-level component for SecureVault Explorer.
-
 import { useState } from 'react';
 import Tree from './components/Tree';
+import PropertiesPanel from './components/PropertiesPanel';
 import vaultData from './data/vaultData';
+import { findNodeWithPath } from './utils/treeUtils';
 
 export default function App() {
-  // Which folder IDs are currently expanded?
-  // A Set is fast for lookups: expandedIds.has(id)
-  const [expandedIds, setExpandedIds] = useState(new Set());
 
-  // Which file/folder ID is currently selected?
+  const [expandedIds, setExpandedIds] = useState(new Set());
   const [selectedId, setSelectedId] = useState(null);
 
-  // Toggle a folder open/closed
   function handleToggle(id) {
     setExpandedIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   }
 
-  // Select a file
   function handleSelect(id) {
     setSelectedId(id);
   }
 
+  const found = selectedId
+    ? findNodeWithPath(vaultData, selectedId)
+    : null;
+  const selectedNode = found?.node || null;
+  const path = found?.path || [];
+
   return (
     <div className="min-h-screen bg-bg-base text-text-primary flex flex-col">
-      {/* HEADER */}
+
       <header className="h-14 flex items-center px-5 border-b border-border-subtle bg-bg-surface">
         <div className="flex items-center gap-2">
           <span>🔒</span>
@@ -44,9 +41,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* MAIN */}
       <div className="flex flex-1 overflow-hidden">
-        {/* LEFT: Tree */}
         <main className="flex-1 overflow-auto p-4">
           <Tree
             data={vaultData}
@@ -57,12 +52,8 @@ export default function App() {
           />
         </main>
 
-        {/* RIGHT: Properties panel placeholder */}
-        <aside className="w-80 bg-bg-surface border-l border-border-subtle p-4">
-          <h2 className="text-sm font-semibold mb-2">Properties</h2>
-          <p className="text-xs text-text-tertiary">
-            Select a file to view details.
-          </p>
+        <aside className="w-80 bg-bg-surface border-l border-border-subtle p-4 overflow-auto">
+          <PropertiesPanel selectedNode={selectedNode} path={path} />
         </aside>
       </div>
     </div>
