@@ -119,6 +119,7 @@ export default function Canvas({
           'radial-gradient(circle, #1e293b 1px, transparent 1px)',
         backgroundSize: '24px 24px',
       }}
+      
     >
 
       <svg
@@ -199,6 +200,8 @@ export default function Canvas({
           />
         );
       })}
+
+      
     </div>
   );
 }

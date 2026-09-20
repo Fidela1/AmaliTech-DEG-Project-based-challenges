@@ -5,7 +5,7 @@ import PreviewView from './components/PreviewView';
 import { nodes as initialNodes, meta } from './data/flowData';
 
 export default function App() {
-
+ 
   const [history, setHistory] = useState([initialNodes]);
   const [historyIndex, setHistoryIndex] = useState(0);
   const nodes = history[historyIndex];
@@ -14,7 +14,7 @@ export default function App() {
   const [view, setView] = useState('editor');
   const [currentNodeId, setCurrentNodeId] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
-  const [pendingNodeType, setPendingNodeType] = useState(null);
+  const [mobileEditOpen, setMobileEditOpen] = useState(false);
 
   const selectedNode = nodes.find((n) => n.id === selectedNodeId) || null;
   const currentNode = nodes.find((n) => n.id === currentNodeId) || null;
@@ -34,48 +34,53 @@ export default function App() {
   );
 
   function handleUndo() {
-    if (!canUndo) return;
-    setHistoryIndex((i) => i - 1);
+    setHistoryIndex((i) => Math.max(0, i - 1));
   }
 
   function handleRedo() {
-    if (!canRedo) return;
     setHistoryIndex((i) => i + 1);
   }
 
+  // ---------- KEYBOARD SHORTCUTS ----------
   useEffect(() => {
     function onKeyDown(e) {
+      const target = e.target;
+      const isEditable =
+        target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+      if (isEditable) return;
+
       const isMac = navigator.platform.toUpperCase().includes('MAC');
       const mod = isMac ? e.metaKey : e.ctrlKey;
 
       if (mod && e.key.toLowerCase() === 'z' && !e.shiftKey) {
         e.preventDefault();
-        handleUndo();
-      }
-      if (
+        setHistoryIndex((i) => Math.max(0, i - 1));
+      } else if (
         (mod && e.key.toLowerCase() === 'z' && e.shiftKey) ||
         (mod && e.key.toLowerCase() === 'y')
       ) {
         e.preventDefault();
-        handleRedo();
+        setHistoryIndex((i) => i + 1);
+      }
+      if (e.key === 'Escape' && mobileEditOpen) {
+        setMobileEditOpen(false);
       }
     }
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [historyIndex, history]);
+  }, [mobileEditOpen]);
+
   function handleSelectNode(id) {
     setSelectedNodeId(id);
+
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setMobileEditOpen(true);
+    }
   }
 
   function handleUpdateNodeText(id, newText) {
     const newNodes = nodes.map((n) =>
       n.id === id ? { ...n, text: newText } : n
-    );
-    pushHistory(newNodes);
-  }
-  function handleMoveNode(id, x, y) {
-    const newNodes = nodes.map((n) =>
-      n.id === id ? { ...n, position: { x, y } } : n
     );
     pushHistory(newNodes);
   }
@@ -96,7 +101,6 @@ export default function App() {
   function handleDeleteNode(id) {
     const node = nodes.find((n) => n.id === id);
     if (!node) return;
-
     if (node.type === 'start') {
       alert('Cannot delete the Start node.');
       return;
@@ -106,47 +110,29 @@ export default function App() {
       .filter((n) => n.id !== id)
       .map((n) => ({
         ...n,
-        options: n.options ? n.options.filter((o) => o.nextId !== id) : [],
+        options: n.options
+          ? n.options.filter((o) => o.nextId !== id)
+          : [],
       }));
 
     pushHistory(newNodes);
     setSelectedNodeId(null);
-  }
-
-  function findEmptySlot(existingNodes) {
-    const COL_WIDTH = 300;
-    const ROW_HEIGHT = 320;
-    const START_X = 60;
-    const START_Y = 60;
-    const MAX_COLS = 4;
-    const MAX_ROWS = 4;
-    const isOccupied = (x, y) =>
-      existingNodes.some(
-        (n) =>
-          Math.abs(n.position.x - x) < 100 &&
-          Math.abs(n.position.y - y) < 100
-      );
-
-    for (let row = 0; row < MAX_ROWS; row++) {
-      for (let col = 0; col < MAX_COLS; col++) {
-        const x = START_X + col * COL_WIDTH;
-        const y = START_Y + row * ROW_HEIGHT;
-        if (!isOccupied(x, y)) {
-          return { x, y };
-        }
-      }
-    }
-    return { x: 60, y: START_Y + MAX_ROWS * ROW_HEIGHT };
+    setMobileEditOpen(false);
   }
 
   function handleAddNode(type = 'question') {
     setPendingNodeType(type);
   }
 
+  const [pendingNodeType, setPendingNodeType] = useState(null);
+
   function handlePlaceNode(x, y) {
     if (!pendingNodeType) return;
 
-    const maxId = nodes.reduce((max, n) => Math.max(max, parseInt(n.id) || 0), 0);
+    const maxId = nodes.reduce(
+      (max, n) => Math.max(max, parseInt(n.id) || 0),
+      0
+    );
     const newId = String(maxId + 1);
 
     const defaults = {
@@ -171,23 +157,27 @@ export default function App() {
       position: { x, y },
     };
 
-    const newNodes = [...nodes, newNode];
-    pushHistory(newNodes);
+    pushHistory([...nodes, newNode]);
     setSelectedNodeId(newId);
     setPendingNodeType(null);
+
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setMobileEditOpen(true);
+    }
   }
 
-  useEffect(() => {
-    function onKey(e) {
-      if (e.key === 'Escape') setPendingNodeType(null);
-    }
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  function handleMoveNode(id, x, y) {
+    const newNodes = nodes.map((n) =>
+      n.id === id ? { ...n, position: { x, y } } : n
+    );
+    pushHistory(newNodes);
+  }
+
   function handleStartPreview() {
     setView('preview');
     setCurrentNodeId(startNode.id);
     setChatHistory([{ role: 'bot', text: startNode.text }]);
+    setMobileEditOpen(false);
   }
 
   function handleExitPreview() {
@@ -212,34 +202,33 @@ export default function App() {
     setChatHistory([{ role: 'bot', text: startNode.text }]);
   }
 
-
-
   return (
     <div className="min-h-screen bg-canvas text-text-primary flex flex-col">
 
-      <header className="relative h-16 flex items-center px-6 border-b border-connector-label-bg bg-panel shrink-0">
+      <header className="relative h-14 md:h-16 flex items-center px-3 md:px-6 border-b border-connector-label-bg bg-panel shrink-0 gap-2 md:gap-4">
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <div className="w-3 h-3 rounded-full bg-gradient-to-br from-border-selected to-border-question" />
-          <span className="font-bold text-sm">SupportFlow Builder</span>
+          <span className="font-bold text-sm hidden md:inline">
+            SupportFlow Builder
+          </span>
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 text-xs text-text-muted tracking-wide">
+        <div className="absolute left-1/2 -translate-x-1/2 text-xs text-text-muted tracking-wide hidden md:block">
           {view === 'editor' ? 'Editor View' : 'Preview Mode'}
         </div>
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2 md:gap-3 min-w-0">
           {view === 'editor' && (
             <>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="🔍 Search nodes..."
-                className="bg-canvas border border-connector-label-bg focus:border-border-selected outline-none rounded-lg px-3 py-2 text-xs text-text-primary w-56 transition-colors"
+                placeholder="🔍 Search..."
+                className="bg-canvas border border-connector-label-bg focus:border-border-selected outline-none rounded-lg px-3 py-2 text-xs text-text-primary flex-1 md:flex-none min-w-0 md:w-56 transition-all"
               />
-
-              <div className="flex items-center gap-1">
+              <div className="hidden md:flex items-center gap-1">
                 <button
                   onClick={handleUndo}
                   disabled={!canUndo}
@@ -266,9 +255,10 @@ export default function App() {
 
               <button
                 onClick={handleStartPreview}
-                className="flex items-center gap-2 bg-border-selected hover:bg-border-selected/80 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                className="bg-border-selected hover:bg-border-selected/80 text-white text-xs md:text-sm font-medium px-3 md:px-4 py-2 rounded-lg transition-colors shrink-0"
               >
-                ▶ Play
+                <span className="hidden md:inline">▶ Play</span>
+                <span className="md:hidden">▶</span>
               </button>
             </>
           )}
@@ -276,18 +266,23 @@ export default function App() {
           {view === 'preview' && (
             <button
               onClick={handleExitPreview}
-              className="flex items-center gap-2 bg-card hover:bg-connector-label-bg border border-connector-label-bg text-text-primary text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+              className="bg-card hover:bg-connector-label-bg border border-connector-label-bg text-text-primary text-xs md:text-sm font-medium px-3 md:px-4 py-2 rounded-lg transition-colors shrink-0"
             >
-              ← Back to Editor
+              <span className="hidden md:inline">← Back to Editor</span>
+              <span className="md:hidden">←</span>
             </button>
           )}
         </div>
       </header>
 
-
+      {/* ============ MAIN AREA ============ */}
       {view === 'editor' ? (
         <div className="flex flex-1 overflow-hidden">
-          <main className="flex-1 overflow-auto p-8">
+          <main className="flex-1 overflow-auto p-2 md:p-8">
+            <div className="lg:hidden mb-2 text-xs text-text-muted text-center">
+              Scroll to pan · Tap a node to edit
+            </div>
+
             <Canvas
               nodes={nodes}
               canvasSize={meta.canvas_size}
@@ -300,7 +295,7 @@ export default function App() {
             />
           </main>
 
-          <aside className="w-96 bg-card border-l border-connector-label-bg p-5 overflow-auto shrink-0 flex flex-col">
+          <aside className="hidden lg:flex w-96 bg-card border-l border-connector-label-bg p-5 overflow-auto shrink-0 flex-col">
             <EditPanel
               node={selectedNode}
               allNodes={nodes}
@@ -320,6 +315,40 @@ export default function App() {
             onAnswer={handleAnswer}
             onRestart={handleRestart}
           />
+        </div>
+      )}
+
+      {/* ============ MOBILE EDIT SHEET ============ */}
+      {view === 'editor' && mobileEditOpen && (
+        <div
+          className="fixed inset-0 z-50 lg:hidden bg-black/60 flex items-end"
+          onClick={() => setMobileEditOpen(false)}
+        >
+          <div
+            className="w-full max-h-[85vh] bg-card border-t border-connector-label-bg rounded-t-2xl p-5 overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4 sticky top-0 bg-card pb-2">
+              <h2 className="text-sm font-bold text-text-primary">Edit Node</h2>
+              <button
+                onClick={() => setMobileEditOpen(false)}
+                className="text-text-muted hover:text-text-primary text-lg leading-none px-2"
+                title="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            <EditPanel
+              node={selectedNode}
+              allNodes={nodes}
+              onChangeText={handleUpdateNodeText}
+              onChangeOption={handleUpdateOption}
+              onDeleteNode={handleDeleteNode}
+              onAddNode={handleAddNode}
+              pendingNodeType={pendingNodeType}
+            />
+          </div>
         </div>
       )}
     </div>
