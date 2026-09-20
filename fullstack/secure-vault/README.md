@@ -52,7 +52,7 @@ Type in the search bar to filter the tree by filename. Matching files highlight 
 ## 🚀 Run Locally
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/AmaliTech-DEG-Project-based-challenges.git
+git clone https://github.com/Fidela1/AmaliTech-DEG-Project-based-challenges.git
 cd AmaliTech-DEG-Project-based-challenges/fullstack/secure-vault
 npm install
 npm run dev

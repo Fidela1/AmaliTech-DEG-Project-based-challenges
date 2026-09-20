@@ -1,6 +1,3 @@
-// TreeNode.jsx
-// Renders a single node and recursively renders children when expanded.
-
 import { useEffect, useRef } from 'react';
 
 export default function TreeNode({
@@ -21,10 +18,8 @@ export default function TreeNode({
   const isSelected = selectedId === node.id;
   const isFocused = focusedId === node.id;
 
-  // Search match
   const isMatch = isSearching && matchedIds.has(node.id);
 
-  // Helper: does this node have any matching descendants?
   function hasMatchDescendant() {
     if (!isFolder || !hasChildren) return false;
     function walk(children) {
@@ -42,7 +37,6 @@ export default function TreeNode({
 
   const paddingLeft = 12 + depth * 20;
 
-  // ---------- HANDLERS (declare BEFORE use) ----------
   function handleClick() {
     onFocus(node.id);
     if (isFolder) {
@@ -52,7 +46,6 @@ export default function TreeNode({
     }
   }
 
-  // ---------- SCROLL INTO VIEW when focused ----------
   const rowRef = useRef(null);
 
   useEffect(() => {
@@ -64,7 +57,6 @@ export default function TreeNode({
     }
   }, [isFocused]);
 
-  // ---------- ROW CLASS ----------
   let rowClass =
     'flex items-center gap-2 py-1.5 pr-3 rounded-md cursor-pointer select-none text-sm transition-all ';
 
@@ -85,14 +77,14 @@ export default function TreeNode({
 
   return (
     <div>
-      {/* ---------- THE ROW ---------- */}
+ 
       <div
         ref={rowRef}
         onClick={handleClick}
         style={{ paddingLeft }}
         className={rowClass}
       >
-        {/* Chevron */}
+
         {isFolder ? (
           <span
             className={`text-text-tertiary text-[10px] transition-transform ${
@@ -105,12 +97,10 @@ export default function TreeNode({
           <span className="w-[10px]" />
         )}
 
-        {/* Icon */}
         <span className="text-sm">
           {isFolder ? (isExpanded ? '📂' : '📁') : '📄'}
         </span>
 
-        {/* Name */}
         <span
           className={
             isFolder ? '' : 'font-mono text-text-mono text-[13px]'
@@ -119,7 +109,6 @@ export default function TreeNode({
           {node.name}
         </span>
 
-        {/* Size */}
         {!isFolder && node.size && (
           <span className="ml-auto text-text-tertiary text-xs font-mono">
             {node.size}
@@ -127,7 +116,6 @@ export default function TreeNode({
         )}
       </div>
 
-      {/* ---------- RECURSION ---------- */}
       {isFolder && isExpanded && hasChildren && (
         <div>
           {node.children.map((child) => (
